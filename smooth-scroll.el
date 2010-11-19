@@ -53,7 +53,7 @@
 ;; =====
 ;; To toggle smooth scrolling feature, just type:
 ;;
-;;    M-x smooth-scroll-mode
+;;   `M-x smooth-scroll-mode RET'
 ;;
 ;; while smooth scrolling feature is enabled, the string "SScr" will
 ;; be displayed on mode line.
