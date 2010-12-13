@@ -285,11 +285,50 @@ When calling from a program, supply as argument a number, nil, or `-'."
   (smooth-scroll/.vscroll-aux arg nil))
 
 
+(defun smooth-scroll/scroll-other-window (&optional arg)
+       "Scroll next window upward ARG lines; or near full screen if no ARG.
+A near full screen is `next-screen-context-lines' less than a full screen.
+The next window is the one below the current one; or the one at the top
+if the current one is at the bottom.  Negative ARG means scroll downward.
+If ARG is the atom `-', scroll downward by nearly full screen.
+When calling from a program, supply as argument a number, nil, or `-'.
+
+If `other-window-scroll-buffer' is non-nil, scroll the window
+showing that buffer, popping the buffer up if necessary.
+If in the minibuffer, `minibuffer-scroll-window' if non-nil
+specifies the window to scroll.  This takes precedence over
+`other-window-scroll-buffer'."
+  (interactive "P")
+  (let ((orig-fn (symbol-function 'smooth-scroll/orig-scroll-up)))
+    (unwind-protect
+        (progn
+          (setf (symbol-function 'smooth-scroll/orig-scroll-up)
+                (symbol-function 'smooth-scroll/orig-scroll-other-window))
+          (smooth-scroll/.vscroll-aux arg t))
+      (setf (symbol-function 'smooth-scroll/orig-scroll-up)
+            orig-fn))))
+
+
+(defun smooth-scroll/scroll-other-window-down (&optional arg)
+       "Scroll the "other window" down.
+For more details, see the documentation for
+`smooth-scroll/scroll-other-window'."
+  (interactive "P")
+  (let ((orig-fn (symbol-function 'smooth-scroll/orig-scroll-up)))
+    (unwind-protect
+        (progn
+          (setf (symbol-function 'smooth-scroll/orig-scroll-up)
+                (symbol-function 'smooth-scroll/orig-scroll-other-window))
+          (smooth-scroll/.vscroll-aux arg t t))
+      (setf (symbol-function 'smooth-scroll/orig-scroll-up)
+            orig-fn))))
+
+
 ;;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 ;;; Functions
 ;;; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-(defun smooth-scroll/.vscroll-aux (amount up-p)
+(defun smooth-scroll/.vscroll-aux (amount up-p &optional inverse)
   "Private function used in `smooth-scroll-mode'."
   (smooth-scroll/.run-without-recursive-call
      ;; First argument is a list, typically prefix arguments with no value.
@@ -318,9 +357,10 @@ When calling from a program, supply as argument a number, nil, or `-'."
    ;;
    (while (> amount 0)
      (let ((delta (min amount (max smooth-scroll/vscroll-step-size 1))))
+       ;; inverse is for `smooth-scroll/scroll-other-window-down'.
        (if up-p
-         (smooth-scroll/orig-scroll-up delta)
-         (smooth-scroll/orig-scroll-down delta))
+         (smooth-scroll/orig-scroll-up (if inverse (- delta) delta))
+         (smooth-scroll/orig-scroll-down (if inverse (- delta) delta)))
        (smooth-scroll/.force-redisplay)
        (setq amount (- amount delta))))
 
@@ -502,6 +542,10 @@ by this function.  This happens in an interactive call."
              (symbol-function 'smooth-scroll/scroll-up))
      (setf (symbol-function 'scroll-down)
              (symbol-function 'smooth-scroll/scroll-down))
+     (setf (symbol-function 'scroll-other-window)
+             (symbol-function 'smooth-scroll/scroll-other-window))
+     (setf (symbol-function 'scroll-other-window-down)
+             (symbol-function 'smooth-scroll/scroll-other-window-down))
      (setf (symbol-function 'scroll-left)
              (symbol-function 'smooth-scroll/scroll-left))
      (setf (symbol-function 'scroll-right)
@@ -518,6 +562,10 @@ by this function.  This happens in an interactive call."
              (symbol-function 'smooth-scroll/orig-scroll-up))
      (setf (symbol-function 'scroll-down)
              (symbol-function 'smooth-scroll/orig-scroll-down))
+     (setf (symbol-function 'scroll-other-window)
+             (symbol-function 'smooth-scroll/orig-scroll-other-window))
+     (setf (symbol-function 'scroll-other-window-down)
+             (symbol-function 'smooth-scroll/orig-scroll-other-window-down))
      (setf (symbol-function 'scroll-left)
              (symbol-function 'smooth-scroll/orig-scroll-left))
      (setf (symbol-function 'scroll-right)
@@ -538,6 +586,13 @@ by this function.  This happens in an interactive call."
   (when (not (fboundp 'smooth-scroll/orig-scroll-down))
     (setf (symbol-function 'smooth-scroll/orig-scroll-down)
             (symbol-function 'scroll-down)))
+  (when (not (fboundp 'smooth-scroll/orig-scroll-other-window))
+    (setf (symbol-function 'smooth-scroll/orig-scroll-other-window)
+            (symbol-function 'scroll-other-window)))
+  (require 'simple)
+  (when (not (fboundp 'smooth-scroll/orig-scroll-other-window-down))
+    (setf (symbol-function 'smooth-scroll/orig-scroll-other-window-down)
+            (symbol-function 'scroll-other-window-down)))
   (when (not (fboundp 'smooth-scroll/orig-scroll-left))
     (setf (symbol-function 'smooth-scroll/orig-scroll-left)
             (symbol-function 'scroll-left)))
@@ -546,14 +601,16 @@ by this function.  This happens in an interactive call."
             (symbol-function 'scroll-right)))
   
   ;; Mark scroll commands.
-  (put 'scroll-up      'scroll-command-p t)
-  (put 'scroll-down    'scroll-command-p t)
-  (put 'scroll-left    'scroll-command-p t)
-  (put 'scroll-right   'scroll-command-p t)
-  (put 'scroll-up-1    'scroll-command-p t)
-  (put 'scroll-down-1  'scroll-command-p t)
-  (put 'scroll-left-1  'scroll-command-p t)
-  (put 'scroll-right-1 'scroll-command-p t))
+  (put 'scroll-up                'scroll-command-p t)
+  (put 'scroll-down              'scroll-command-p t)
+  (put 'scroll-other-window      'scroll-command-p t)
+  (put 'scroll-other-window-down 'scroll-command-p t)
+  (put 'scroll-left              'scroll-command-p t)
+  (put 'scroll-right             'scroll-command-p t)
+  (put 'scroll-up-1              'scroll-command-p t)
+  (put 'scroll-down-1            'scroll-command-p t)
+  (put 'scroll-left-1            'scroll-command-p t)
+  (put 'scroll-right-1           'scroll-command-p t))
 
 (provide 'smooth-scroll)
 
