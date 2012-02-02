@@ -545,7 +545,7 @@ by this function.  This happens in an interactive call."
 ;;;============================================================================
 
 (easy-mmode-define-minor-mode
- smooth-scroll-mode "Minor mode for smooth scrolling."
+ smooth-scroll-mode "Minor mode for smooth scrolling and in-place scrolling."
  :global t
  :init-value nil
  :lighter " SScr"
