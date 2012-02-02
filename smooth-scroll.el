@@ -1,6 +1,6 @@
 ;; smooth-scroll.el --- Minor mode for smooth scrolling.
 
-;; Copyright (C) 2010 K-talo Miyazaki, all rights reserved.
+;; Copyright (C) 2010, 2012 K-talo Miyazaki, all rights reserved.
 
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 14 March 2010 AM 03:36 JST
@@ -107,6 +107,19 @@
 (eval-when-compile
   (require 'cl)
   (require 'easy-mmode))
+
+
+;;;============================================================================
+;;;
+;;;  Suppress compiler warnings.
+;;;
+;;;============================================================================
+(eval-when-compile
+  (dolist (fn-name '(smooth-scroll/orig-scroll-up
+                     smooth-scroll/orig-scroll-down
+                     smooth-scroll/orig-scroll-left
+                     smooth-scroll/orig-scroll-right))
+    (setf (symbol-function fn-name) (lambda (&rest args)))))
 
 
 ;;; ===========================================================================
@@ -222,8 +235,7 @@ After scrolling, position of the cursor will be kept when possible."
     
 (defun smooth-scroll/.debug-msg (str)
   (when smooth-scroll/.debugging-p
-    (save-excursion
-      (set-buffer (get-buffer-create "*Messages*"))
+    (with-current-buffer (get-buffer-create "*Messages*")
       (goto-char (point-max))
       (insert str)
       (goto-char (point-max))
@@ -310,7 +322,7 @@ specifies the window to scroll.  This takes precedence over
 
 
 (defun smooth-scroll/scroll-other-window-down (&optional arg)
-       "Scroll the "other window" down.
+       "Scroll the \"other window\" down.
 For more details, see the documentation for
 `smooth-scroll/scroll-other-window'."
   (interactive "P")
