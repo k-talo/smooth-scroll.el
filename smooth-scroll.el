@@ -629,4 +629,4 @@ by this function.  This happens in an interactive call."
 
 (provide 'smooth-scroll)
 
-;; smooth-scroll ends here
+;;; smooth-scroll.el ends here
