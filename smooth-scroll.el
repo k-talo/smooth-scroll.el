@@ -1,4 +1,4 @@
-;; smooth-scroll.el --- Minor mode for smooth scrolling and in-place scrolling.
+;;; smooth-scroll.el --- Minor mode for smooth scrolling and in-place scrolling.
 
 ;; Copyright (C) 2010, 2012 K-talo Miyazaki, all rights reserved.
 
