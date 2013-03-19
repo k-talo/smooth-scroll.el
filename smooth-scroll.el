@@ -1,6 +1,6 @@
 ;;; smooth-scroll.el --- Minor mode for smooth scrolling and in-place scrolling.
 
-;; Copyright (C) 2010, 2012 K-talo Miyazaki, all rights reserved.
+;; Copyright (C) 2010, 2012-2013 K-talo Miyazaki, all rights reserved.
 
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 14 March 2010 AM 03:36 JST
@@ -100,6 +100,9 @@
 ;;   of original `scroll-left' and `scroll-right' functions.
 
 ;;; Change Log:
+;; 
+;; v1.2 Mon Mar 18 12:55:10 2013 JST
+;;   - Fixed a bug that smooth scroll feature won't work with Emacs 24.
 ;; v1.1 Thu Feb  2 16:10:09 2012 JST
 ;;   - Supress compiler warnings.
 
