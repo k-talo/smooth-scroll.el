@@ -112,19 +112,6 @@
   (require 'easy-mmode))
 
 
-;;;============================================================================
-;;;
-;;;  Suppress compiler warnings.
-;;;
-;;;============================================================================
-(eval-when-compile
-  (dolist (fn-name '(smooth-scroll/orig-scroll-up
-                     smooth-scroll/orig-scroll-down
-                     smooth-scroll/orig-scroll-left
-                     smooth-scroll/orig-scroll-right))
-    (setf (symbol-function fn-name) (lambda (&rest args)))))
-
-
 ;;; ===========================================================================
 ;;;
 ;;;  User customizable things.
@@ -374,8 +361,10 @@ For more details, see the documentation for
      (let ((delta (min amount (max smooth-scroll/vscroll-step-size 1))))
        ;; inverse is for `smooth-scroll/scroll-other-window-down'.
        (if up-p
-         (smooth-scroll/orig-scroll-up (if inverse (- delta) delta))
-         (smooth-scroll/orig-scroll-down (if inverse (- delta) delta)))
+         (if (fboundp 'smooth-scroll/orig-scroll-up) ;; For compiler warnings.
+             (smooth-scroll/orig-scroll-up (if inverse (- delta) delta)))
+         (if (fboundp 'smooth-scroll/orig-scroll-down) ;; For compiler warnings.
+             (smooth-scroll/orig-scroll-down (if inverse (- delta) delta))))
        (smooth-scroll/.force-redisplay)
        (setq amount (- amount delta))))
 
@@ -474,8 +463,10 @@ by this function.  This happens in an interactive call."
 
 (defun smooth-scroll/.do-primitive-hscroll (delta left-p)
   (if left-p
-    (smooth-scroll/orig-scroll-left delta)
-    (smooth-scroll/orig-scroll-right delta)))
+      (if (fboundp 'smooth-scroll/orig-scroll-left) ;; For compiler warnings.
+          (smooth-scroll/orig-scroll-left delta))
+    (if (fboundp 'smooth-scroll/orig-scroll-right) ;; For compiler warnings.
+        (smooth-scroll/orig-scroll-right delta))))
 
 
 ;; These two variables are used in `smooth-scroll/.restore-auto-hscroll-mode'.
