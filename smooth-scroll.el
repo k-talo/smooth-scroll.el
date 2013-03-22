@@ -8,7 +8,7 @@
 ;; Revision: $Id$
 ;; URL: http://www.emacswiki.org/emacs/download/smooth-scroll.el
 ;; GitHub: http://github.com/k-talo/smooth-scroll.el
-;; Version: 1.1
+;; Version: 1.2
 
 ;; This file is not part of GNU Emacs.
 
