@@ -1,6 +1,6 @@
 ;;; smooth-scroll.el --- Minor mode for smooth scrolling and in-place scrolling.
 
-;; Copyright (C) 2010, 2012-2013 K-talo Miyazaki, all rights reserved.
+;; Copyright (C) 2010, 2012-2013, 2024 K-talo Miyazaki, all rights reserved.
 
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 14 March 2010 AM 03:36 JST
@@ -59,7 +59,7 @@
 ;; while smooth scrolling feature is enabled, the string "SScr" will
 ;; be displayed on mode line.
 ;;
-;; Also check out the customization group
+;; Also check out the customization group by:
 ;;
 ;;   `M-x customize-group RET smooth-scroll RET'
 ;;
