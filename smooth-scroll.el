@@ -101,6 +101,9 @@
 
 ;;; Change Log:
 ;; 
+;; v1.3 Sat Sep 14 12:31:49 2024 JST
+;;   - Use 'cl-lib' to supress compiler warnings.
+;;   - Use 'line-beginning-position' and 'line-end-position' to supress compiler warnings.
 ;; v1.2 Mon Mar 18 12:55:10 2013 JST
 ;;   - Fixed a bug that smooth scroll feature won't work with Emacs 24.
 ;; v1.1 Thu Feb  2 16:10:09 2012 JST
@@ -108,7 +111,7 @@
 
 ;;; Code:
 
-(defconst smooth-scroll/version "1.1")
+(defconst smooth-scroll/version "1.3")
 
 (eval-when-compile
   (require 'easy-mmode))
