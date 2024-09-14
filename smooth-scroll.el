@@ -111,8 +111,8 @@
 (defconst smooth-scroll/version "1.1")
 
 (eval-when-compile
-  (require 'cl)
   (require 'easy-mmode))
+(require 'cl-lib)
 
 
 ;;; ===========================================================================
@@ -161,7 +161,7 @@ When calling from a program, supply as argument a number, nil, or `-'.
 
 After scrolling, position of the cursor will be kept when possible."
   (interactive "P")
-  (let ((amount (case arg ((-) -1) ((nil) 1) (t arg))))
+  (let ((amount (cl-case arg ((-) -1) ((nil) 1) (t arg))))
     (scroll-up amount)))
 
 (defun scroll-down-1 (&optional arg)
@@ -173,7 +173,7 @@ When calling from a program, supply as argument a number, nil, or `-'.
 
 After scrolling, position of the cursor will be kept when possible."
   (interactive "P")
-  (let ((amount (case arg ((-) -1) ((nil) 1) (t arg))))
+  (let ((amount (cl-case arg ((-) -1) ((nil) 1) (t arg))))
     (scroll-down amount)))
 
 (defun scroll-left-1 (&optional arg)
@@ -185,7 +185,7 @@ When calling from a program, supply as argument a number, nil, or `-'.
 
 After scrolling, position of the cursor will be kept when possible."
   (interactive "P")
-  (let ((amount (case arg ((-) -1) ((nil) 1) (t arg))))
+  (let ((amount (cl-case arg ((-) -1) ((nil) 1) (t arg))))
     (scroll-left amount)))
 
 (defun scroll-right-1 (&optional arg)
@@ -197,7 +197,7 @@ When calling from a program, supply as argument a number, nil, or `-'.
 
 After scrolling, position of the cursor will be kept when possible."
   (interactive "P")
-  (let ((amount (case arg ((-) -1) ((nil) 1) (t arg))))
+  (let ((amount (cl-case arg ((-) -1) ((nil) 1) (t arg))))
     (scroll-right amount)))
 
 
@@ -338,14 +338,14 @@ For more details, see the documentation for
   (smooth-scroll/.run-without-recursive-call
      ;; First argument is a list, typically prefix arguments with no value.
      (when (listp amount)
-       (setq amount (first amount)))
+       (setq amount (cl-first amount)))
      
    ;; Arrange direction.
    ;;
    (when (eq amount '-)
      (setq amount nil)
      (setq up-p (not up-p)))
-   (when (minusp (or amount 0))
+   (when (cl-minusp (or amount 0))
      (setq amount (- amount))
      (setq up-p (not up-p)))
 
@@ -432,7 +432,7 @@ by this function.  This happens in an interactive call."
   ;;  |        |             /                      |     |
   ;;  |text text text text.. I text text text text text   |
   ;;  |\       |                                    | /   |
-  ;;  |(point-at-bol)                       (poitn-at-eol)|
+  ;;  |(line-beginning-position)       (line-end-position)|
   ;;  |        |                                    |     |
   ;;  +--------|                                    |-----+
   ;;           +------------------------------------+ <--\
@@ -444,7 +444,7 @@ by this function.  This happens in an interactive call."
   ;;       \                       \
   ;;       hscroll                (window-width)
   ;;
-  (let* ((col-num (- (point) (point-at-bol)))
+  (let* ((col-num (- (point) (line-beginning-position)))
          (hscroll (window-hscroll))
          (required-margin (+ hscroll-margin delta 1)))
     ;; Retains required margin if necessary.
@@ -455,7 +455,7 @@ by this function.  This happens in an interactive call."
           ;; Move cursor to forward.
           (forward-char (min (- required-margin left-margin)
                              ;; Don't move forward over (point-at-eol).
-                             (- (point-at-eol) (point))))))
+                             (- (line-end-position) (point))))))
       ;; When scroll to right:
       (let ((right-margin (- (+ (window-width) hscroll) col-num)))
         (when (< right-margin required-margin)
@@ -498,14 +498,14 @@ by this function.  This happens in an interactive call."
        (message "[smooth-scroll] hscroll won't work when the value of `truncate-line' is `nil'.")
      ;; First argument is a list, typically prefix arguments with no value.
      (when (listp amount)
-       (setq amount (first amount)))
+       (setq amount (cl-first amount)))
      
      ;; Arrange direction.
      ;;
      (when (eq amount '-)
        (setq amount nil)
        (setq left-p (not left-p)))
-     (when (minusp (or amount 0))
+     (when (cl-minusp (or amount 0))
        (setq amount (- amount))
        (setq left-p (not left-p)))
 
@@ -525,7 +525,7 @@ by this function.  This happens in an interactive call."
            (smooth-scroll/.keep-cursor-within-new-hscroll-margin delta left-p)
            (smooth-scroll/.do-primitive-hscroll delta left-p)
            (smooth-scroll/.force-redisplay)
-           (decf amount delta)))
+           (cl-decf amount delta)))
        ;;
        (smooth-scroll/.restore-auto-hscroll-mode orig-auto-p)
        
